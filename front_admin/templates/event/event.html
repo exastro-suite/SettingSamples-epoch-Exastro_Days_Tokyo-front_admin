@@ -1,5 +1,5 @@
 <!--
-#   Copyright 2021 NEC Corporation
+#   Copyright 2022 NEC Corporation
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -18,6 +18,9 @@
 {% block link_css %}
 <link rel="stylesheet" href="{{ url_for("static", filename="css/event.css") }}" />
 {% endblock %}
+{% block script_js %}
+<script src="{{ url_for("static", filename="js/event.js") }}"></script>
+{% endblock %}
 {% block title %}events{% endblock %}
 
 {% block header %}
@@ -30,51 +33,64 @@
 {% block content %}
 <main id="main">
   <article id="event-list">
+    <nav id="adminMenu">
+      <ul class="adminMenuList">
+        <li class="adminMenuItem">
+          <button class="adminMenuButton" data-type="register">
+            <span>登録</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
     <section class="block">
       <h2 class="blockTitle">
         upcoming events
       </h2>
       <ol class="blockList">
-        {% if upcomings|length %}
+      {% if upcomings|length %}
         {% for item in upcomings %}
         <li class="blockItem">
-          <a href="/{{ item.event_path }}">
-            <dl class="event">
-              <dd class="eventTitle">{{ item.event_name }}</dd>
-            </dl>
-          </a>
+          <dl class="event" data-event-path="{{ item.event_path }}">
+            <dd class="eventDelete">
+              <button class="eventButton" data-type="delete">
+              </button>
+            </dd>
+            <dd class="eventTitle">{{ item.event_name }}</dd>
+          </dl>
         </li>
         {% endfor %}
-        {% else %}
+      {% else %}
         <li class="blockItem">
           <dl class="event nodata">
             <dd class="eventTitle">Not planned yet.</dd>
-          </adl
+          </dl>
         </li>
-        {% endif %}
+      {% endif %}
       </ol>
 
       <h2 class="blockTitle">
         archive events
       </h2>
       <ol class="blockList">
-        {% if archives|length %}
+      {% if archives|length %}
         {% for item in archives %}
         <li class="blockItem">
-          <a href="/{{ item.event_path }}">
-            <dl class="event">
-              <dd class="eventTitle">{{ item.event_name }}</dd>
-            </dl>
-          </a>
+          <dl class="event" data-event-path="{{ item.event_path }}">
+            <dd class="eventDelete">
+              <button class="eventButton" data-type="delete">
+              </button>
+            </dd>
+            <dd class="eventTitle">{{ item.event_name }}</dd>
+          </dl>
         </li>
         {% endfor %}
-        {% else %}
+      {% else %}
         <li class="blockItem">
           <dl class="event nodata">
             <dd class="eventTitle">No archives.</dd>
-          </adl
+          </dl>
         </li>
-        {% endif %}
+      {% endif %}
       </ol>
     </section>
   </article>

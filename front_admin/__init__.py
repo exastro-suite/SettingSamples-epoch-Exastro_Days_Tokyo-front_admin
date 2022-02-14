@@ -54,7 +54,14 @@ def create_app(test_config=None):
 
     login_manager = LoginManager()
     login_manager.init_app(app)
-    login_manager.login_view = "admin_login_app.login"
+    login_manager.login_view = "admin_login.admin_login"
+
+    from .models.auth import User
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        # workaround
+        return User()
 
     from .views.event import event_app
     from .views.seminar import seminar_app
