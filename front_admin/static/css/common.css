@@ -234,7 +234,7 @@ align-items: center;
 flex-direction: column;
 position: fixed;
 left: 0; top: 0;
-z-index: 10000;
+z-index: 1000;
 width: 100%; height: 100%;
 background-color: rgba( 0,0,0,.5 );
 opacity: 0;
@@ -431,9 +431,11 @@ background-color: rgba( 0,0,0,.05 );
 background-color: rgba( 0,0,0,.1 );
 }
 .modalMenuButton[data-type="apply"],
-.modalMenuButton[data-type="register"] {
+.modalMenuButton[data-type="register"],
+.modalMenuButton[data-type="update"] {
 background-color: #80D13D;
 }
-.modalMenuButton[data-type="over"] {
+.modalMenuButton[data-type="over"],
+.modalMenuButton[data-type="delete"] {
 background-color: #bb2142;
 }

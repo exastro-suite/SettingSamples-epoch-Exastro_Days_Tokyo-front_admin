@@ -32,7 +32,7 @@ def event_list():
 
     events = event.get_events()
 
-    upcomings = [x for x in events if str_to_datetime(x['event_date']) > datetime.now()]
+    upcomings = [x for x in events if server_str_to_datetime(x['event_date']) > datetime.now()]
     upcomings = sorted(upcomings, key=lambda x:x['event_date'], reverse=True)
     upcomings = [
         {
@@ -41,7 +41,7 @@ def event_list():
         } for x in upcomings
     ]
 
-    archives = [x for x in events if str_to_datetime(x['event_date']) <= datetime.now()]
+    archives = [x for x in events if server_str_to_datetime(x['event_date']) <= datetime.now()]
     archives = sorted(archives, key=lambda x:x['event_date'], reverse=True)
     archives = [
         {
@@ -60,6 +60,7 @@ def event_detail(event_id):
     logger.info("call: event_detail [event_id={}]".format(event_id))
 
     event_detail = event.get_event_detail(event_id)
+    event_detail['event_date'] = exchange_date_to_client(event_detail['event_date'])
 
     return event_detail
 
@@ -69,6 +70,7 @@ def create_event():
     logger.info("call: create_event")
 
     param = request.json
+    param['event_date'] = exchange_date_to_server(param['event_date'])
     event.create_event(param)
 
     return '', 201
@@ -79,7 +81,24 @@ def update_event(event_id):
     logger.info("call: update_event [event_id={}]".format(event_id))
 
     param = request.json
+
+    path_event_id = event_id
+    param_event_id = param.get('event_id', None)
+    if is_int(param_event_id) and path_event_id != int(param_event_id):
+        logger.info("Invalid request data: path_event_id={}, param_event_id={}".format(path_event_id, param_event_id))
+        return 'invalid data.', 400
+
+    param['event_date'] = exchange_date_to_server(param['event_date'])
     event.update_event(param)
+
+    return '', 204
+
+@event_app.route("/<int:event_id>", methods=["DELETE"])
+@login_required
+def delete_event(event_id):
+    logger.info("call: delete_event [event_id={}]".format(event_id))
+
+    event.delete_event(event_id)
 
     return '', 204
 
@@ -127,10 +146,26 @@ def timetable(event_id):
         "event/timetable.html", header_data=header_data, timetable=timetable
     )
 
-def str_to_datetime(datetime_str):
+def client_str_to_datetime(datetime_str):
+
+    return datetime.strptime(datetime_str, '%Y/%m/%d %H:%M')
+
+def server_str_to_datetime(datetime_str):
 
     # return datetime.fromisoformat(datetime_str.replace('Z', '+00:00')) # python3.7~
     return datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M:%S.%fZ') # not %z, because https://bugs.python.org/issue15873
+
+def exchange_date_to_client(datetime_str):
+
+    date_obj = server_str_to_datetime(datetime_str)
+
+    return date_obj.strftime('%Y/%m/%d %H:%M')
+
+def exchange_date_to_server(datetime_str):
+
+    date_obj = client_str_to_datetime(datetime_str)
+
+    return date_obj.strftime('%Y-%m-%dT%H:%M:%S.%f+00:00')
 
 def construct_seminar_data(tmp_seminars, speakers_dict):
 
@@ -141,7 +176,7 @@ def construct_seminar_data(tmp_seminars, speakers_dict):
         logger.debug(json.dumps(item))
 
         block_name = item['block_name']
-        class_str = str(str_to_datetime(item['start_datetime']).hour)
+        class_str = str(server_str_to_datetime(item['start_datetime']).hour)
         seminar_title = item['seminar_name']
         seminar_author = ''
         #seminar_author = speakers_dict[item['speaker_id']]['speaker_name']
@@ -160,3 +195,10 @@ def construct_seminar_data(tmp_seminars, speakers_dict):
         seminar[block_name][class_str] = [seminar_title, seminar_author, seminar_status, seminar_id]
 
     return seminar
+
+def is_int(s):
+    try:
+        int(s)
+        return True
+    except ValueError:
+        return False

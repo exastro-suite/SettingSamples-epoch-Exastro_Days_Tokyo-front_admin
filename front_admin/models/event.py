@@ -23,7 +23,7 @@ logger = getLogger(__name__)
 
 
 def get_events():
-    logger.debug("Method called.")
+    logger.debug("models.event.get_events called.")
 
     base_url = _create_base_url()
     api_path = '/api/v1/event'
@@ -49,7 +49,7 @@ def get_events():
     return event_list
 
 def get_event_detail(event_id):
-    logger.debug("Method called.")
+    logger.debug("models.event.get_event_detail called.")
 
     base_url = _create_base_url()
     api_path = '/api/v1/event/{}'.format(event_id)
@@ -75,7 +75,7 @@ def get_event_detail(event_id):
     return event_detail
 
 def get_timetable(event_id, user_id = None, kind_of_sso = None):
-    logger.debug("Method called.")
+    logger.debug("models.event.get_timetable called.")
 
     base_url = _create_base_url()
     api_path = '/api/v1/event/{}/timetable'.format(event_id)
@@ -106,7 +106,7 @@ def get_timetable(event_id, user_id = None, kind_of_sso = None):
     return event_timetable
 
 def get_master():
-    logger.debug("Method called.")
+    logger.debug("models.event.get_master called.")
 
     base_url = _create_base_url()
     api_path = '/api/v1/master'
@@ -137,7 +137,7 @@ def get_master():
     return master
 
 def create_event(event_info):
-    logger.debug("Method called.")
+    logger.debug("models.event.create_event called.")
 
     base_url = _create_base_url()
     api_path = '/api/v1/event/'
@@ -163,7 +163,7 @@ def create_event(event_info):
     return None
 
 def update_event(event_info):
-    logger.debug("Method called.")
+    logger.debug("models.event.update_event called.")
 
     event_id = event_info['event_id']
     base_url = _create_base_url()
@@ -176,6 +176,32 @@ def update_event(event_info):
         # 取得
         logger.debug("request_url: {}".format(base_url + api_path))
         response = requests.put(base_url + api_path, headers=header, data=json.dumps(body))
+        if response.status_code != 204:
+            raise Exception(response)
+
+        #event_detail = response.json()
+
+    except Exception as e:
+        logger.debug(e)
+        logger.debug("traceback:" + traceback.format_exc())
+
+        raise
+
+    return None
+
+def delete_event(event_id):
+    logger.debug("models.event.delete_event called.")
+
+    base_url = _create_base_url()
+    api_path = '/api/v1/event/{}'.format(event_id)
+    header = _create_header()
+    body = {}
+
+    #event_detail = {}
+    try:
+        # 取得
+        logger.debug("request_url: {}".format(base_url + api_path))
+        response = requests.delete(base_url + api_path, headers=header, data=json.dumps(body))
         if response.status_code != 204:
             raise Exception(response)
 

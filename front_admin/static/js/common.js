@@ -106,7 +106,7 @@ modal.prototype = {
             const $sync = $( this ),
                   key2 = $sync.attr('data-key2');
             $sync.html( textEntities( m.data[key1][value][key2] ));
-          });       
+          });
         }
       }
     });
@@ -126,6 +126,12 @@ modal.prototype = {
         m.$body.removeClass('modalOpen');
       }
     });
+
+    /* -------------------------------------------------- *\
+      日付入力欄
+    \* -------------------------------------------------- */
+    const $dateInput = $modal.find('.date-input');
+    $dateInput.datePicker({'s': 'none'});
 
     return $modal;
   },
@@ -221,7 +227,7 @@ modal.prototype = {
         case 'date':
           const key_date = v.name,
                 initValue1 = textEntities( m.data[key_date] );
-          return '<input type="text" class="modalInputText" data-name="' + v.name + '" value="' + initValue1 + '">';
+          return '<input type="text" class="modalInputText date-input" data-name="' + v.name + '" value="' + initValue1 + '">';
         case 'text':
           const key_text = v.name,
                 initValue2 = textEntities( m.data[key_text] );

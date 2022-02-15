@@ -69,7 +69,7 @@ $(function(){
             })
             .done((data, textStatus, jqXHR) => {
 
-              alert('登録しました。');
+              window.location.reload();
             })
             .fail((jqXHR, textStatus, errorThrown) => {
               
@@ -117,12 +117,6 @@ $(function(){
       })
       .done((data, textStatus, jqXHR) => {
 
-        // const updateEventData = {
-        //   'event_name': "",
-        //   'event_venue': "",
-        //   'event_date': "",
-        //   'event_overview': "",
-        // };
         var updateEventData = data;
 
         const $modal = m.open( updateModalData, updateEventData, {
@@ -131,20 +125,25 @@ $(function(){
             const value = m.getValue();
             console.log(value);
 
+            bodyData = {'event_id': event_path};
+            $.each(value, function(index, val) {
+              $.extend(bodyData, val);
+            });
+
             $.ajax({
-              type: 'POST',
-              url: '/event',
+              type: 'PUT',
+              url: '/event/' + event_path,
               contentType: 'application/json',
-              data: JSON.stringify({}),
+              data: JSON.stringify(bodyData),
               async: false
             })
             .done((data, textStatus, jqXHR) => {
 
-              alert('登録しました。');
+              window.location.reload();
             })
             .fail((jqXHR, textStatus, errorThrown) => {
               
-              alert('登録に失敗しました。');
+              alert('更新に失敗しました。');
             });
           }
         } );
@@ -177,35 +176,37 @@ $(function(){
       event.stopPropagation();
 
       const $event = $( this ).closest('.event'),
-            event_id = $event.attr('data-eventid');
+            event_path = $event.attr('data-event-path');
 
       $.ajax({
         type: 'GET',
-        url: '/event/' + event_id,
+        url: '/event/' + event_path,
         async: false
       })
       .done((data, textStatus, jqXHR) => {
 
-        const $modal = m.open( deleteModalData, newEmptyData, {
+        var deleteEventData = data;
+
+        const $modal = m.open( deleteModalData, deleteEventData, {
           'delete': function(){
             // 削除処理
             const value = m.getValue();
             console.log(value);
 
             $.ajax({
-              type: 'POST',
-              url: '/event',
+              type: 'DELETE',
+              url: '/event/' + event_path,
               contentType: 'application/json',
               data: JSON.stringify({}),
               async: false
             })
             .done((data, textStatus, jqXHR) => {
 
-              alert('登録しました。');
+              window.location.reload();
             })
             .fail((jqXHR, textStatus, errorThrown) => {
               
-              alert('登録に失敗しました。');
+              alert('削除に失敗しました。');
             });
           }
         } );

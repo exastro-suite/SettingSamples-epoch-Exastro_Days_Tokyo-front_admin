@@ -17,9 +17,11 @@
 
 {% block link_css %}
 <link rel="stylesheet" href="{{ url_for("static", filename="css/event.css") }}" />
+<link rel="stylesheet" href="{{ url_for("static", filename="css/datepicker.css") }}" />
 {% endblock %}
 {% block script_js %}
 <script src="{{ url_for("static", filename="js/event.js") }}"></script>
+<script src="{{ url_for("static", filename="js/datepicker.js") }}"></script>
 {% endblock %}
 {% block title %}events{% endblock %}
 
