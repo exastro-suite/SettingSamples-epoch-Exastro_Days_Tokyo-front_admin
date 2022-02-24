@@ -35,8 +35,7 @@ def get_events():
         # 取得
         logger.debug("request_url: {}".format(base_url + api_path))
         response = requests.get(base_url + api_path, headers=header, data=json.dumps(body))
-        if response.status_code != 200:
-            raise Exception(response)
+        response.raise_for_status()
 
         event_list = response.json()
 
@@ -61,8 +60,7 @@ def get_event_detail(event_id):
         # 取得
         logger.debug("request_url: {}".format(base_url + api_path))
         response = requests.get(base_url + api_path, headers=header, data=json.dumps(body))
-        if response.status_code != 200:
-            raise Exception(response)
+        response.raise_for_status()
 
         event_detail = response.json()
 
@@ -92,8 +90,7 @@ def get_timetable(event_id, user_id = None, kind_of_sso = None):
         # 取得
         logger.debug("request_url: {}".format(base_url + api_path))
         response = requests.get(base_url + api_path, headers=header, params=params)
-        if response.status_code != 200:
-            raise Exception(response)
+        response.raise_for_status()
 
         event_timetable = response.json()
 
@@ -149,8 +146,7 @@ def create_event(event_info):
         # 取得
         logger.debug("request_url: {}".format(base_url + api_path))
         response = requests.post(base_url + api_path, headers=header, data=json.dumps(body))
-        if response.status_code != 201:
-            raise Exception(response)
+        response.raise_for_status()
 
         #event_detail = response.json()
 
@@ -176,8 +172,7 @@ def update_event(event_info):
         # 取得
         logger.debug("request_url: {}".format(base_url + api_path))
         response = requests.put(base_url + api_path, headers=header, data=json.dumps(body))
-        if response.status_code != 204:
-            raise Exception(response)
+        response.raise_for_status()
 
         #event_detail = response.json()
 
@@ -202,8 +197,7 @@ def delete_event(event_id):
         # 取得
         logger.debug("request_url: {}".format(base_url + api_path))
         response = requests.delete(base_url + api_path, headers=header, data=json.dumps(body))
-        if response.status_code != 204:
-            raise Exception(response)
+        response.raise_for_status()
 
         #event_detail = response.json()
 

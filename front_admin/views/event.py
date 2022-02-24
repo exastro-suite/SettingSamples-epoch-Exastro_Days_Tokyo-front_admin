@@ -30,6 +30,27 @@ logger = getLogger(__name__)
 def event_list():
     logger.info("call: event_list")
 
+    user_info = {
+        "name": "Admin",
+    }
+
+    header_data = {
+        "menu_item_list": [
+            {
+                "name": "speaker list",
+                "url_path": "/speaker",
+            },
+            {
+                "name": "seminar list",
+                "url_path": "/seminar",
+            },
+            {
+                "name": "participant list",
+                "url_path": "/participant",
+            },
+        ],
+    }
+
     events = event.get_events()
 
     upcomings = [x for x in events if server_str_to_datetime(x['event_date']) > datetime.now()]
@@ -51,7 +72,7 @@ def event_list():
     ]
 
     return render_template(
-        "event/event.html", upcomings=upcomings, archives=archives
+        "event/event.html", upcomings=upcomings, archives=archives, user_info=user_info, header_data=header_data
     )
 
 @event_app.route("/<int:event_id>", methods=["GET"])

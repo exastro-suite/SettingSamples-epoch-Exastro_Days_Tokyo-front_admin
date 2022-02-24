@@ -22,23 +22,22 @@ from logging import getLogger
 logger = getLogger(__name__)
 
 
-def get_speaker(speaker_id_list):
+def get_speakers():
     logger.debug("Method called.")
 
     base_url = _create_base_url()
     api_path = '/api/v1/speaker'
     header = _create_header()
-    body = {"speaker_id": json.dumps(speaker_id_list)}
 
     speakers = {}
     try:
         # 取得
         logger.debug("request_url: {}".format(base_url + api_path))
-        response = requests.get(base_url + api_path, headers=header, data=json.dumps(body))
-        if response.status_code != 200:
-            raise Exception(response)
+        response = requests.get(base_url + api_path, headers=header)
+        response.raise_for_status()
 
         speakers = response.json()
+        #logger.debug("speakers: {}".format(json.dumps(speakers)))
 
     except Exception as e:
         logger.debug(e)
@@ -47,6 +46,97 @@ def get_speaker(speaker_id_list):
         # todo
 
     return speakers
+
+def get_speaker_detail(speaker_id):
+    logger.debug("models.speaker.get_speaker_detail called.")
+
+    base_url = _create_base_url()
+    api_path = '/api/v1/speaker/{}'.format(speaker_id)
+    header = _create_header()
+    body = {}
+
+    event_detail = {}
+    try:
+        # 取得
+        logger.debug("request_url: {}".format(base_url + api_path))
+        response = requests.get(base_url + api_path, headers=header, data=json.dumps(body))
+        response.raise_for_status()
+
+        event_detail = response.json()
+
+    except Exception as e:
+        logger.debug(e)
+        logger.debug("traceback:" + traceback.format_exc())
+
+        raise
+
+    return event_detail
+
+def create_speaker(speaker_info):
+    logger.debug("models.speaker.create_event called.")
+
+    base_url = _create_base_url()
+    api_path = '/api/v1/speaker/'
+    header = _create_header()
+    body = speaker_info
+
+    try:
+        # 取得
+        logger.debug("request_url: {}".format(base_url + api_path))
+        response = requests.post(base_url + api_path, headers=header, data=json.dumps(body))
+        response.raise_for_status()
+
+    except Exception as e:
+        logger.debug(e)
+        logger.debug("traceback:" + traceback.format_exc())
+
+        raise
+
+    return None
+
+def update_speaker(speaker_info):
+    logger.debug("models.speaker.update_speaker called.")
+
+    speaker_id = speaker_info['speaker_id']
+    base_url = _create_base_url()
+    api_path = '/api/v1/speaker/{}'.format(speaker_id)
+    header = _create_header()
+    body = speaker_info
+
+    try:
+        # 取得
+        logger.debug("request_url: {}".format(base_url + api_path))
+        response = requests.put(base_url + api_path, headers=header, data=json.dumps(body))
+        response.raise_for_status()
+
+    except Exception as e:
+        logger.debug(e)
+        logger.debug("traceback:" + traceback.format_exc())
+
+        raise
+
+    return None
+
+def delete_speaker(speaker_id):
+    logger.debug("models.event.delete_speaker called.")
+
+    base_url = _create_base_url()
+    api_path = '/api/v1/speaker/{}'.format(speaker_id)
+    header = _create_header()
+
+    try:
+        # 取得
+        logger.debug("request_url: {}".format(base_url + api_path))
+        response = requests.delete(base_url + api_path, headers=header)
+        response.raise_for_status()
+
+    except Exception as e:
+        logger.debug(e)
+        logger.debug("traceback:" + traceback.format_exc())
+
+        raise
+
+    return None
 
 def _create_header():
     # ヘッダ情報

@@ -16,19 +16,19 @@
 {% extends 'base.html' %}
 
 {% block link_css %}
-<link rel="stylesheet" href="{{ url_for("static", filename="css/event.css") }}" />
+<link rel="stylesheet" href="{{ url_for("static", filename="css/speaker.css") }}" />
 <link rel="stylesheet" href="{{ url_for("static", filename="css/datepicker.css") }}" />
 {% endblock %}
 {% block script_js %}
-<script src="{{ url_for("static", filename="js/event.js") }}"></script>
+<script src="{{ url_for("static", filename="js/speaker.js") }}"></script>
 <script src="{{ url_for("static", filename="js/datepicker.js") }}"></script>
 {% endblock %}
-{% block title %}events{% endblock %}
+{% block title %}speakers{% endblock %}
 
 {% block header %}
 <header id="header">
   <div class="headerInner">
-    <h1 class="headerTitle">イベント一覧</h1>
+    <h1 class="headerTitle">登壇者一覧</h1>
     <nav class="headerMenu">
       <ul class="headerMenuList">
         {% for item in header_data.menu_item_list %}
@@ -63,11 +63,11 @@
     </nav>
     <section class="block">
       <h2 class="blockTitle">
-        upcoming events
+        登壇者
       </h2>
       <ol class="blockList">
-      {% if upcomings|length %}
-        {% for item in upcomings %}
+      {% if speakers|length %}
+        {% for item in speakers %}
         <li class="blockItem">
           <dl class="event" data-event-path="{{ item.event_path }}">
             <dd class="eventDelete">
@@ -81,32 +81,7 @@
       {% else %}
         <li class="blockItem">
           <dl class="event nodata">
-            <dd class="eventTitle">Not planned yet.</dd>
-          </dl>
-        </li>
-      {% endif %}
-      </ol>
-
-      <h2 class="blockTitle">
-        archive events
-      </h2>
-      <ol class="blockList">
-      {% if archives|length %}
-        {% for item in archives %}
-        <li class="blockItem">
-          <dl class="event" data-event-path="{{ item.event_path }}">
-            <dd class="eventDelete">
-              <button class="eventButton" data-type="delete">
-              </button>
-            </dd>
-            <dd class="eventTitle">{{ item.event_name }}</dd>
-          </dl>
-        </li>
-        {% endfor %}
-      {% else %}
-        <li class="blockItem">
-          <dl class="event nodata">
-            <dd class="eventTitle">No archives.</dd>
+            <dd class="eventTitle">No data.</dd>
           </dl>
         </li>
       {% endif %}
