@@ -12,29 +12,8 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-import json
-import os
-import requests
-import traceback
+from flask import session
 
-from logging import getLogger
+def get_id_token_from_session():
 
-logger = getLogger(__name__)
-
-
-def _create_header(id_token):
-    # ヘッダ情報
-    header = {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer {}'.format(id_token),
-    }
-
-    return header
-
-def _create_base_url():
-
-    protocol = os.environ['SERVICE_EVENT_PROTOCOL']
-    host = os.environ['SERVICE_EVENT_HOST']
-    port = os.environ['SERVICE_EVENT_PORT']
-
-    return protocol + '://' + host + ':' + port
+    return session.get('id_token', None)

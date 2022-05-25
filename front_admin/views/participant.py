@@ -12,7 +12,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from flask import Blueprint, render_template, request, session
+from flask import Blueprint, render_template, request
 from flask_login import login_required
 from logging import getLogger
 

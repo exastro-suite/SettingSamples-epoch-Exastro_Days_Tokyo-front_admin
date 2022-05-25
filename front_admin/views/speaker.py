@@ -12,10 +12,11 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from flask import Blueprint, render_template, request, session
+from flask import Blueprint, render_template, request
 from flask_login import login_required
 from logging import getLogger
 
+from . import get_id_token_from_session
 from ..models import speaker
 
 speaker_app = Blueprint("speaker", __name__, template_folder="templates")
@@ -47,7 +48,8 @@ def speaker_list():
         ],
     }
 
-    speakers = speaker.get_speakers()
+    id_token = get_id_token_from_session()
+    speakers = speaker.get_speakers(id_token)
     speakers = [
         {
             'event_path': x['speaker_id'],
@@ -65,7 +67,8 @@ def speaker_detail(speaker_id):
 
     logger.info("call: speaker_detail [speaker_id={}]".format(speaker_id))
 
-    speaker_detail = speaker.get_speaker_detail(speaker_id)
+    id_token = get_id_token_from_session()
+    speaker_detail = speaker.get_speaker_detail(speaker_id, id_token)
 
     return speaker_detail
 
@@ -75,7 +78,9 @@ def create_speaker():
     logger.info("call: create_speaker")
 
     param = request.json
-    speaker.create_speaker(param)
+
+    id_token = get_id_token_from_session()
+    speaker.create_speaker(param, id_token)
 
     return '', 201
 
@@ -92,7 +97,8 @@ def update_speaker(speaker_id):
         logger.info("Invalid request data: path_speaker_id={}, param_speaker_id={}".format(path_speaker_id, param_speaker_id))
         return 'invalid data.', 400
 
-    speaker.update_speaker(param)
+    id_token = get_id_token_from_session()
+    speaker.update_speaker(param, id_token)
 
     return '', 204
 
@@ -101,7 +107,8 @@ def update_speaker(speaker_id):
 def delete_speaker(speaker_id):
     logger.info("call: delete_speaker [speaker_id={}]".format(speaker_id))
 
-    speaker.delete_speaker(speaker_id)
+    id_token = get_id_token_from_session()
+    speaker.delete_speaker(speaker_id, id_token)
 
     return '', 204
 

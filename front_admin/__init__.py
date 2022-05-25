@@ -54,7 +54,18 @@ def create_app(test_config=None):
 
     login_manager = LoginManager()
     login_manager.init_app(app)
-    login_manager.login_view = "admin_login.admin_login"
+
+    preset_login_type = ['basic', 'keycloak']
+    login_type = 'basic' # default
+    env_login_type = os.environ.get('LOGIN_TYPE', 'basic')
+
+    if env_login_type in preset_login_type:
+        login_type = env_login_type
+
+    if login_type == 'basic':
+        login_manager.login_view = "admin_login.admin_basic_login"
+    elif login_type == 'keycloak':
+        login_manager.login_view = "admin_login.admin_oidc_login"
 
     from .models.auth import User
 

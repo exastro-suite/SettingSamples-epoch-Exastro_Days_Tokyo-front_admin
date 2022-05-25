@@ -22,12 +22,12 @@ from logging import getLogger
 logger = getLogger(__name__)
 
 
-def get_events():
+def get_events(id_token):
     logger.debug("models.event.get_events called.")
 
     base_url = _create_base_url()
     api_path = '/api/v1/event'
-    header = _create_header()
+    header = _create_header(id_token)
     body = {}
 
     event_list = []
@@ -47,12 +47,12 @@ def get_events():
 
     return event_list
 
-def get_event_detail(event_id):
+def get_event_detail(event_id, id_token):
     logger.debug("models.event.get_event_detail called.")
 
     base_url = _create_base_url()
     api_path = '/api/v1/event/{}'.format(event_id)
-    header = _create_header()
+    header = _create_header(id_token)
     body = {}
 
     event_detail = {}
@@ -72,12 +72,12 @@ def get_event_detail(event_id):
 
     return event_detail
 
-def get_timetable(event_id, user_id = None, kind_of_sso = None):
+def get_timetable(event_id, user_id = None, kind_of_sso = None, id_token = None):
     logger.debug("models.event.get_timetable called.")
 
     base_url = _create_base_url()
     api_path = '/api/v1/event/{}/timetable'.format(event_id)
-    header = _create_header()
+    header = _create_header(id_token)
     params = {}
 
     if user_id:
@@ -102,12 +102,12 @@ def get_timetable(event_id, user_id = None, kind_of_sso = None):
 
     return event_timetable
 
-def get_master():
+def get_master(id_token):
     logger.debug("models.event.get_master called.")
 
     base_url = _create_base_url()
     api_path = '/api/v1/master'
-    header = _create_header()
+    header = _create_header(id_token)
     body = {}
 
     master = {}
@@ -133,12 +133,12 @@ def get_master():
 
     return master
 
-def create_event(event_info):
+def create_event(event_info, id_token):
     logger.debug("models.event.create_event called.")
 
     base_url = _create_base_url()
     api_path = '/api/v1/event/'
-    header = _create_header()
+    header = _create_header(id_token)
     body = event_info
 
     #event_detail = {}
@@ -158,13 +158,13 @@ def create_event(event_info):
 
     return None
 
-def update_event(event_info):
+def update_event(event_info, id_token):
     logger.debug("models.event.update_event called.")
 
     event_id = event_info['event_id']
     base_url = _create_base_url()
     api_path = '/api/v1/event/{}'.format(event_id)
-    header = _create_header()
+    header = _create_header(id_token)
     body = event_info
 
     #event_detail = {}
@@ -184,12 +184,12 @@ def update_event(event_info):
 
     return None
 
-def delete_event(event_id):
+def delete_event(event_id, id_token):
     logger.debug("models.event.delete_event called.")
 
     base_url = _create_base_url()
     api_path = '/api/v1/event/{}'.format(event_id)
-    header = _create_header()
+    header = _create_header(id_token)
     body = {}
 
     #event_detail = {}
@@ -209,10 +209,11 @@ def delete_event(event_id):
 
     return None
 
-def _create_header():
+def _create_header(id_token):
     # ヘッダ情報
     header = {
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer {}'.format(id_token),
     }
 
     return header

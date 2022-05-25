@@ -19,6 +19,7 @@ from flask import Blueprint, render_template, request, jsonify
 from flask_login import login_required
 from logging import getLogger
 
+from . import get_id_token_from_session
 from ..models import event
 from ..models import speaker
 
@@ -51,7 +52,8 @@ def event_list():
         ],
     }
 
-    events = event.get_events()
+    id_token = get_id_token_from_session()
+    events = event.get_events(id_token)
 
     upcomings = [x for x in events if server_str_to_datetime(x['event_date']) > datetime.now()]
     upcomings = sorted(upcomings, key=lambda x:x['event_date'], reverse=True)
@@ -80,7 +82,8 @@ def event_list():
 def event_detail(event_id):
     logger.info("call: event_detail [event_id={}]".format(event_id))
 
-    event_detail = event.get_event_detail(event_id)
+    id_token = get_id_token_from_session()
+    event_detail = event.get_event_detail(event_id, id_token)
     event_detail['event_date'] = exchange_date_to_client(event_detail['event_date'])
 
     return event_detail
@@ -92,7 +95,9 @@ def create_event():
 
     param = request.json
     param['event_date'] = exchange_date_to_server(param['event_date'])
-    event.create_event(param)
+
+    id_token = get_id_token_from_session()
+    event.create_event(param, id_token)
 
     return '', 201
 
@@ -110,7 +115,9 @@ def update_event(event_id):
         return 'invalid data.', 400
 
     param['event_date'] = exchange_date_to_server(param['event_date'])
-    event.update_event(param)
+
+    id_token = get_id_token_from_session()
+    event.update_event(param, id_token)
 
     return '', 204
 
@@ -119,7 +126,8 @@ def update_event(event_id):
 def delete_event(event_id):
     logger.info("call: delete_event [event_id={}]".format(event_id))
 
-    event.delete_event(event_id)
+    id_token = get_id_token_from_session()
+    event.delete_event(event_id, id_token)
 
     return '', 204
 
@@ -128,8 +136,10 @@ def delete_event(event_id):
 def timetable(event_id):
     logger.info("call: timetable")
 
+    id_token = get_id_token_from_session()
+
     # header準備
-    event_detail = event.get_event_detail(event_id)
+    event_detail = event.get_event_detail(event_id, id_token)
 
     header_data = {
         "event_name": event_detail['event_name'],
@@ -146,7 +156,7 @@ def timetable(event_id):
     }
 
     # body準備
-    tmp_seminars = event.get_timetable(event_id)
+    tmp_seminars = event.get_timetable(event_id, id_token)
     #speaker_id_list = [x['speaker_id'] for x in tmp_seminars]
     #speakers = speaker.get_speaker(speaker_id_list)
     speakers_dict = {}
@@ -154,7 +164,7 @@ def timetable(event_id):
     #                    'speaker_name': x['speaker_name'],
     #                    'speaker_profile': x['speaker_profile']
     #                    } for x in speakers}
-    master = event.get_master()
+    master = event.get_master(id_token)
 
     seminars = construct_seminar_data(tmp_seminars, speakers_dict)
     timetable = {

@@ -22,12 +22,12 @@ from logging import getLogger
 logger = getLogger(__name__)
 
 
-def get_speakers():
+def get_speakers(id_token):
     logger.debug("Method called.")
 
     base_url = _create_base_url()
     api_path = '/api/v1/speaker'
-    header = _create_header()
+    header = _create_header(id_token)
 
     speakers = {}
     try:
@@ -47,12 +47,12 @@ def get_speakers():
 
     return speakers
 
-def get_speaker_detail(speaker_id):
+def get_speaker_detail(speaker_id, id_token):
     logger.debug("models.speaker.get_speaker_detail called.")
 
     base_url = _create_base_url()
     api_path = '/api/v1/speaker/{}'.format(speaker_id)
-    header = _create_header()
+    header = _create_header(id_token)
     body = {}
 
     event_detail = {}
@@ -72,12 +72,12 @@ def get_speaker_detail(speaker_id):
 
     return event_detail
 
-def create_speaker(speaker_info):
+def create_speaker(speaker_info, id_token):
     logger.debug("models.speaker.create_event called.")
 
     base_url = _create_base_url()
     api_path = '/api/v1/speaker/'
-    header = _create_header()
+    header = _create_header(id_token)
     body = speaker_info
 
     try:
@@ -94,13 +94,13 @@ def create_speaker(speaker_info):
 
     return None
 
-def update_speaker(speaker_info):
+def update_speaker(speaker_info, id_token):
     logger.debug("models.speaker.update_speaker called.")
 
     speaker_id = speaker_info['speaker_id']
     base_url = _create_base_url()
     api_path = '/api/v1/speaker/{}'.format(speaker_id)
-    header = _create_header()
+    header = _create_header(id_token)
     body = speaker_info
 
     try:
@@ -117,12 +117,12 @@ def update_speaker(speaker_info):
 
     return None
 
-def delete_speaker(speaker_id):
+def delete_speaker(speaker_id, id_token):
     logger.debug("models.event.delete_speaker called.")
 
     base_url = _create_base_url()
     api_path = '/api/v1/speaker/{}'.format(speaker_id)
-    header = _create_header()
+    header = _create_header(id_token)
 
     try:
         # 取得
@@ -138,10 +138,11 @@ def delete_speaker(speaker_id):
 
     return None
 
-def _create_header():
+def _create_header(id_token):
     # ヘッダ情報
     header = {
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer {}'.format(id_token),
     }
 
     return header
